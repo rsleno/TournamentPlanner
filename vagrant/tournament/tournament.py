@@ -54,7 +54,6 @@ def registerPlayer(name):
     """
     db = connect()
     cursor = db.cursor()
-    #print name
     cursor.execute("INSERT INTO players (name) VALUES (%s)", (name,))
     db.commit()
     db.close()
@@ -73,6 +72,13 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
+    db = connect()
+    cursor = db.cursor()
+    cursor.execute("SELECT players.id, players.name, count(matches.winner) as wins, count(matches.id) as matches FROM players LEFT JOIN matches ON players.id = matches.winner GROUP BY players.id ORDER BY wins")
+    #cursor.execute("SELECT players.id, players.name, count(matches.winner) as wins, count(matches.id) as matches FROM matches LEFT JOIN players ON players.id = matches.winner GROUP BY players.id ORDER BY wins")
+    result = cursor.fetchall()
+    db.close()
+    return result
 
 
 def reportMatch(winner, loser):
@@ -82,8 +88,13 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
+    db = connect()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO matches (winner, looser) VALUES (%s, %s)", (winner,loser))
+    db.commit()
+    db.close()
  
- 
+
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
   
