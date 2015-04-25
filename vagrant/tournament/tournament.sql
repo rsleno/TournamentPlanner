@@ -13,8 +13,7 @@ CREATE TABLE IF NOT EXISTS players (
 
 CREATE TABLE IF NOT EXISTS matches (
 	id serial PRIMARY KEY,
-	player1_id integer REFERENCES players (id),
-	player2_id integer REFERENCES players (id),
-	winner integer REFERENCES players (id)
+	winner integer REFERENCES players (id),
+	looser integer REFERENCES players (id)
 );
 
