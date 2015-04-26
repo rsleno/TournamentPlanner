@@ -74,8 +74,8 @@ def playerStandings():
     """
     db = connect()
     cursor = db.cursor()
-    cursor.execute("SELECT players.id, players.name, count(matches.winner) as wins, count(matches.id) as matches FROM players LEFT JOIN matches ON players.id = matches.winner GROUP BY players.id ORDER BY wins")
-    #cursor.execute("SELECT players.id, players.name, count(matches.winner) as wins, count(matches.id) as matches FROM matches LEFT JOIN players ON players.id = matches.winner GROUP BY players.id ORDER BY wins")
+    #cursor.execute("SELECT players.id, players.name, count(matches.winner) as wins, count(matches.id) as matches FROM players LEFT JOIN matches ON players.id = matches.winner GROUP BY players.id ORDER BY wins")
+    cursor.execute("SELECT players.id, players.name, total_wins.wins, total_matches.num FROM players JOIN total_wins ON players.id = total_wins.id JOIN total_matches ON players.id = total_matches.id")
     result = cursor.fetchall()
     db.close()
     return result
@@ -90,7 +90,7 @@ def reportMatch(winner, loser):
     """
     db = connect()
     cursor = db.cursor()
-    cursor.execute("INSERT INTO matches (winner, looser) VALUES (%s, %s)", (winner,loser))
+    cursor.execute("INSERT INTO matches (winner, loser) VALUES (%s, %s)", (winner,loser))
     db.commit()
     db.close()
  
