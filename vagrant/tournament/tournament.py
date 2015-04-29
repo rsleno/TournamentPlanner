@@ -74,8 +74,7 @@ def playerStandings():
     """
     db = connect()
     cursor = db.cursor()
-    #cursor.execute("SELECT players.id, players.name, count(matches.winner) as wins, count(matches.id) as matches FROM players LEFT JOIN matches ON players.id = matches.winner GROUP BY players.id ORDER BY wins")
-    cursor.execute("SELECT players.id, players.name, total_wins.wins, total_matches.num FROM players JOIN total_wins ON players.id = total_wins.id JOIN total_matches ON players.id = total_matches.id")
+    cursor.execute("SELECT * from scores")
     result = cursor.fetchall()
     db.close()
     return result
