@@ -21,14 +21,8 @@ CREATE TABLE IF NOT EXISTS matches (
 	loser integer REFERENCES players (id)
 );
 
-CREATE VIEW total_matches AS
-	SELECT players.id, count(*) AS num FROM players 
-	JOIN matches ON players.id = matches.winner OR players.id = matches.loser
-	GROUP BY players.id
+CREATE VIEW scores AS
+	SELECT players.id, players.name, (SELECT count(matches.winner) FROM matches WHERE players.id = matches.winner) AS wins, 
+	(SELECT count(*) FROM matches WHERE players.id = matches.winner or players.id = matches.loser) AS num FROM matches
+	RIGHT JOIN players ON matches.winner=players.id OR matches.loser=players.id GROUP BY players.id ORDER BY wins desc
 ;
-
-CREATE VIEW total_wins AS
-	SELECT players.id, count(matches.winner) AS wins FROM players 
-	JOIN matches ON players.id = matches.winner GROUP BY players.id
-;
-
