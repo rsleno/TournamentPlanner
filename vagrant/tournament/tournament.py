@@ -110,4 +110,17 @@ def swissPairings():
         name2: the second player's name
     """
 
+    db = connect()
+    cursor = db.cursor()
+    cursor.execute("SELECT count(*) from scores")
+    result = cursor.fetchall()
+    num_players = result[0][0]
+    pairs = []
+    for i in range(0,num_players,2):
+    	query = "SELECT id, name FROM scores LIMIT 2 OFFSET (%d)" % (i,)
+    	cursor.execute(query)
+    	result = cursor.fetchall()
+    	pairs.append(result[0] + result[1])
+    db.close()
+    return pairs
 
