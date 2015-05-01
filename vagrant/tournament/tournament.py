@@ -74,8 +74,7 @@ def playerStandings():
     """
     db = connect()
     cursor = db.cursor()
-    cursor.execute("SELECT players.id, players.name, count(matches.winner) as wins, count(matches.id) as matches FROM players LEFT JOIN matches ON players.id = matches.winner GROUP BY players.id ORDER BY wins")
-    #cursor.execute("SELECT players.id, players.name, count(matches.winner) as wins, count(matches.id) as matches FROM matches LEFT JOIN players ON players.id = matches.winner GROUP BY players.id ORDER BY wins")
+    cursor.execute("SELECT * from scores")
     result = cursor.fetchall()
     db.close()
     return result
@@ -90,7 +89,7 @@ def reportMatch(winner, loser):
     """
     db = connect()
     cursor = db.cursor()
-    cursor.execute("INSERT INTO matches (winner, looser) VALUES (%s, %s)", (winner,loser))
+    cursor.execute("INSERT INTO matches (winner, loser) VALUES (%s, %s)", (winner,loser))
     db.commit()
     db.close()
  
@@ -111,4 +110,17 @@ def swissPairings():
         name2: the second player's name
     """
 
+    db = connect()
+    cursor = db.cursor()
+    cursor.execute("SELECT count(*) from scores")
+    result = cursor.fetchall()
+    num_players = result[0][0]
+    pairs = []
+    for i in range(0,num_players,2):
+    	query = "SELECT id, name FROM scores LIMIT 2 OFFSET (%d)" % (i,)
+    	cursor.execute(query)
+    	result = cursor.fetchall()
+    	pairs.append(result[0] + result[1])
+    db.close()
+    return pairs
 
