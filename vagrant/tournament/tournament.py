@@ -4,6 +4,7 @@
 #
 
 import psycopg2
+import random
 
 
 def connect():
@@ -124,3 +125,19 @@ def swissPairings():
     db.close()
     return pairs
 
+
+players = ['Twilight Sparkle', 'Fluttershy', 'Applejack', 'Pinkie Pie', 'Andrew Parson', 'Emily Everett', 'Peter Power', 'Lewis Lame',\
+'Sue', 'Michael O.', 'Frankie', 'Obb', 'Zack', 'Maria', 'Sophie Smith', 'Hooray']
+
+deleteMatches()
+deletePlayers()
+
+for player in players:
+	registerPlayer(player)
+
+pairs = swissPairings()
+
+opt = [0, 2]
+for pair in pairs:
+	random.shuffle(opt)
+	reportMatch(pair[opt[0]], pair[opt[1]])
