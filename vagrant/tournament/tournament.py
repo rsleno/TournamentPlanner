@@ -3,9 +3,9 @@
 # tournament.py -- implementation of a Swiss-system tournament
 #
 
+import math
 import psycopg2
 import random
-
 
 def connect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
@@ -110,13 +110,10 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
-
+    num_players = countPlayers()
+    pairs = []
     db = connect()
     cursor = db.cursor()
-    cursor.execute("SELECT count(*) from scores")
-    result = cursor.fetchall()
-    num_players = result[0][0]
-    pairs = []
     for i in range(0,num_players,2):
     	query = "SELECT id, name FROM scores LIMIT 2 OFFSET (%d)" % (i,)
     	cursor.execute(query)
@@ -126,18 +123,31 @@ def swissPairings():
     return pairs
 
 
-players = ['Twilight Sparkle', 'Fluttershy', 'Applejack', 'Pinkie Pie', 'Andrew Parson', 'Emily Everett', 'Peter Power', 'Lewis Lame',\
-'Sue', 'Michael O.', 'Frankie', 'Obb', 'Zack', 'Maria', 'Sophie Smith', 'Hooray']
+def simulation():
+	""" Runs a tournament simulation """
 
-deleteMatches()
-deletePlayers()
+	# list with the players
+	players = ['Twilight Sparkle', 'Fluttershy', 'Applejack', 'Pinkie Pie', 'Andrew Parson', 'Emily Everett', 'Peter Power', 'Lewis Lame',\
+	'Sue', 'Michael O.', 'Frankie', 'Obb', 'Zack', 'Maria', 'Sophie Smith', 'Hooray']
 
-for player in players:
-	registerPlayer(player)
+	# clean tables
+	deleteMatches()
+	deletePlayers()
 
-pairs = swissPairings()
+	# register players
+	for player in players:
+		registerPlayer(player)
 
-opt = [0, 2]
-for pair in pairs:
-	random.shuffle(opt)
-	reportMatch(pair[opt[0]], pair[opt[1]])
+	opt = [0, 2]
+	num_players = countPlayers()
+	num_matches =  int(math.log(num_players, 2))
+
+	# simulate tournament
+	for i in range(num_matches):
+		pairs = swissPairings()
+		for pair in pairs:
+			random.shuffle(opt)
+			reportMatch(pair[opt[0]], pair[opt[1]])
+
+
+simulation()
