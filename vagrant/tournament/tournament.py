@@ -123,6 +123,8 @@ def swissPairings():
     return pairs
 
 
+
+
 def simulation():
 	""" Runs a tournament simulation """
 
@@ -150,4 +152,5 @@ def simulation():
 			reportMatch(pair[opt[0]], pair[opt[1]])
 
 
-simulation()
+# Run a simulation:
+# simulation()
