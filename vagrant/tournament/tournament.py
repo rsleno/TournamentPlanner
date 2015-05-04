@@ -27,7 +27,7 @@ def deleteMatches():
 
 
 def deletePlayers():
-    """Remove all the player records from the database."""¨{}
+    """Remove all the player records from the database."""
     db, cursor = connect()
     query = "DELETE FROM players"
     cursor.execute(query)
@@ -69,9 +69,8 @@ def playerStandings():
 def reportMatch(winner, loser):
     """Records the outcome of a single match between two players."""
     db, cursor = connect()
-    query = "INSERT INTO matches (winner, loser) VALUES (%s, %s)",\
-        (winner, loser)
-    cursor.execute(query)
+    cursor.execute("INSERT INTO matches (winner, loser) VALUES (%s, %s)",
+                   (winner, loser))
     db.commit()
     db.close()
 
