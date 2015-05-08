@@ -1,15 +1,31 @@
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from database_setup import Base, Restaurant, MenuItem
+
+engine = create_engine('sqlite:///restaurantMenu.db')
+Base.metadata.bind=engine
+DBSession = sessionmaker(bind = engine)
+session = DBSession()
 
 class webServerHandler(BaseHTTPRequestHandler):
 	def do_GET(self):
 		try:
-			if self.path.endswith("/hello"):
+			if self.path.endswith("/restaurants"):
+				restaurants = session.query(Restaurant).all()
 				self.send_response(200)
 				self.send_header('Content-type', 'text/html')
 				self.end_headers()
 				output = ""
-				output += "<html><body>"
-				output += "Hello!"
+				output += "<html><body>Rstaurants"
+				for restaurant in restaurants:
+					output += restaurant.name
+					output += "</br>"
+					output += "<a href='#'>Edit</a>"
+					output += "</br>"
+					output += "<a href='#'>Delete</a>"
+					output += "</br>"
+					output += "</br>"
 				output += "</body></html>"
 				self.wfile.write(output)
 				print output
@@ -31,3 +47,4 @@ def main():
 
 if __name__ == '__main__':
 	main()
+
